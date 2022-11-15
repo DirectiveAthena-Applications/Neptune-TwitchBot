@@ -3,13 +3,13 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # General Packages
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 # Athena Packages
-from AthenaColor import ForeNest as Fore
-from AthenaTwitchBot.logic import chat_command, chat_message, sub_only_command
+from AthenaTwitchBot.logic import chat_command, broadcaster_only_command
 from AthenaTwitchBot.logic.logic_bot import LogicBot
 from AthenaTwitchBot.message_context import MessageContext
+from AthenaTwitchBot.bot_event_types import BotEvent
 
 # Local Imports
 from neptune_twitchbot.data.git import GIT_TEXT
@@ -22,8 +22,9 @@ class Neptune_TwitchBot(LogicBot):
     default_channel = "directiveathena"
 
     async def get_git_message(self, text:str) -> str:
+        command, *args =  text.lower().split(" ")
         return GIT_TEXT.get(
-            text.lower().split(" ")[1],
+            args[0] if args else "",
             GIT_TEXT[""]
         )
 
@@ -44,3 +45,11 @@ class Neptune_TwitchBot(LogicBot):
         await message_context.reply(
             await self.get_git_message(message_context.text)
         )
+
+    @broadcaster_only_command(cmd_name="restart")
+    async def cmd_restart(self, message_context:MessageContext):
+        message_context.bot_event_future.set_result(BotEvent.RESTART)
+
+    @broadcaster_only_command(cmd_name="exit")
+    async def cmd_exit(self, message_context:MessageContext):
+        message_context.bot_event_future.set_result(BotEvent.EXIT)

@@ -12,7 +12,7 @@ from __future__ import annotations
 # - Code -
 # ----------------------------------------------------------------------------------------------------------------------
 GIT_TEXT = {
-    "": "Andreas's personal github account: https://github.com/AndreasSas",
+    "": "Andreas's personal github account: https://github.com/AndreasSas For a collection of open source libraries, with as little 3rd party dependencies: https://github.com/Athena-Chaos-Driven-Code For a collection of the applications Andreas is working on: https://github.com/DirectiveAthena-Applications",
 
     "athenacolor": "A Python package to use RGB in the console. It works in a nested, and wrapped version: https://github.com/Athena-Chaos-Driven-Code/AthenaColor",
     "athenacss": "CSS generator for Python: https://github.com/Athena-Chaos-Driven-Code/AthenaCSS",
