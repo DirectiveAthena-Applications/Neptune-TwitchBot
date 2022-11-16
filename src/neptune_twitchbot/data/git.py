@@ -21,7 +21,7 @@ GIT_TEXT = {
     "athenalib": "A base library which is used by a lot of Andreas's other libraries and application: https://github.com/Athena-Chaos-Driven-Code/AthenaLib",
     "athenatwitchbot": "A library to create twitch chat bots with, and connect to the Helix API: https://github.com/Athena-Chaos-Driven-Code/AthenaTwitchBot",
 
-    "neptune_twitchbot": "The bot that is running on Andreas's twitch channel: https://github.com/DirectiveAthena-Applications/Neptune-TwitchBot",
+    "neptune_twitchbot": "The irc that is running on Andreas's twitch channel: https://github.com/DirectiveAthena-Applications/Neptune-TwitchBot",
 
     "sol_portusspatiumapi" : "The backend django server that Andreas uses for his storydev software: https://github.com/DirectiveAthena-Applications/Sol-PortusSpatiumAPI",
     "sol_api" : "The backend django server that Andreas uses for his storydev software: https://github.com/DirectiveAthena-Applications/Sol-PortusSpatiumAPI",

@@ -5,16 +5,19 @@
 from __future__ import annotations
 import os
 import asyncio
+import sys
 import tracemalloc
+import pathlib
 
 # Athena Packages
 from AthenaLib.parsers.dot_env import DotEnv as AthenaDotEnv
 
-from AthenaTwitchBot.bot_constuctor import BotConstructor
-from AthenaTwitchBot.bot_settings import BotSettings
+from AthenaTwitchBot.irc.irc_connection import IrcConnection
+from AthenaTwitchBot.irc.bot import Bot
+from AthenaTwitchBot.logger import IrcLogger, TwitchLoggerType
 
 # Local Imports
-from neptune_twitchbot.objects.twitch_bot import Neptune_TwitchBot
+from neptune_twitchbot.objects.neptune_commands import NeptuneCommands
 
 # ----------------------------------------------------------------------------------------------------------------------
 # - Code -
@@ -25,26 +28,42 @@ async def main():
     # Load up secrets to environment
     AthenaDotEnv(filepath="secrets/secrets.env", auto_run=True)
 
-    # Assemble the bot settings
-    #   Doesn't do anything, but preload some values
-    bot_settings = BotSettings(
-        bot_name=os.getenv("TWITCH_BOT_NAME"),
-        bot_oath_token=os.getenv("TWITCH_BOT_OATH"),
-        bot_join_channel=["directiveathena"],
-        bot_capability_tags=True,
-        bot_capability_commands=True,
-        bot_capability_membership=True,
+    # Define the logger as soon as possible,
+    #   As it is called by a lot of different systems
+    #   Will create tables if need be
+    IrcLogger.set_logger(
+        logger_type=TwitchLoggerType.IRC,
+        logger=IrcLogger(
+            path=pathlib.Path("data/logger.sqlite"),
+            enabled=True
+        )
     )
+    await IrcLogger.get_logger(TwitchLoggerType.IRC).create_tables()
 
     # Run constructor,
     #   Which starts the connections
     #   create the task in a loop that runs forever
-    await BotConstructor(
-        settings=bot_settings,
-        logic_bot=Neptune_TwitchBot(),
-        logging_enabled=True,
+    await IrcConnection(
+
+        # Assemble the bare BOT
+        bot_obj=Bot(
+            name=os.getenv("TWITCH_BOT_NAME"),
+            oath_token=os.getenv("TWITCH_BOT_OATH"),
+            join_channel=["directiveathena"],
+            capability_tags=True,
+            capability_commands=True,
+            capability_membership=True,
+            command_logic=NeptuneCommands()
+
+        ),
+
+        # Define restart attempts
+        #   -1 is infinite restarts
         restart_attempts=-1
     ).construct()
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except RuntimeError as e:
+        sys.exit(e)
