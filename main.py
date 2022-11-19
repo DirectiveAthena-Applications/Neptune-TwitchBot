@@ -15,6 +15,7 @@ from AthenaLib.parsers.dot_env import DotEnv as AthenaDotEnv
 from AthenaTwitchBot.irc.irc_connection import IrcConnection
 from AthenaTwitchBot.irc.bot import Bot
 from AthenaTwitchBot.logger import IrcLogger, TwitchLoggerType
+from AthenaTwitchBot.irc.logic.commands_sqlite import CommandLogicSqlite
 
 # Local Imports
 from neptune_twitchbot.objects.neptune_commands import NeptuneCommands
@@ -53,7 +54,8 @@ async def main():
             capability_tags=True,
             capability_commands=True,
             capability_membership=True,
-            command_logic=NeptuneCommands()
+            # command_logic=NeptuneCommands(),
+            command_logic=CommandLogicSqlite(db_path="data/command_logic.sqlite"),
 
         ),
 

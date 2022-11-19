@@ -23,7 +23,7 @@ class NeptuneCommands(CommandLogic):
             "Want to keep up to date with when Andreas goes live, or are you interested in more background related stuff? Then join our discord! https://discord.gg/RJMHvtvBtp"
         )
 
-    @CommandLogic.command_broadcaster(CommandData("broad_test"))
+    @CommandLogic.command_broadcaster(CommandData("broadcaster_test"))
     async def cmd_broad_test(self, context: MessageCommandContext):
         await context.reply(
             "I should only reply to Andreas"
