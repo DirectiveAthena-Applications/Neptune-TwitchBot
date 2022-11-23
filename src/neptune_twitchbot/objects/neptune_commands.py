@@ -47,7 +47,7 @@ class NeptuneCommands(CommandLogic):
         context.bot_event_future.set_result(BotEvent.EXIT)
 
     @CommandLogic.command_moderator(CommandData(["so"]))
-    async def cmd_restart(self, context:MessageCommandContext):
+    async def cmd_shout_out(self, context:MessageCommandContext):
         await context.write(
-            "I should only reply to Andreas"
+            f"Shout out to: @{context.args[0]} !!! Follow them on https://www.twitch.tv/{context.args[0]}"
         )
