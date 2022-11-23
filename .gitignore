@@ -1,4 +1,7 @@
+#PyCharm
 .idea/
+
+# Data that shouldn't be recorded to the git repo
 secrets/
 data/logger.sqlite
 data/logic.sqlite
