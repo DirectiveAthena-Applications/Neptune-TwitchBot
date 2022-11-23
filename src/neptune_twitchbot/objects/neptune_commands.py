@@ -5,9 +5,9 @@
 from __future__ import annotations
 
 # Athena Packages
-from AthenaTwitchBot.irc.logic import CommandLogic, CommandData
-from AthenaTwitchBot.irc.message_context import MessageCommandContext
-from AthenaTwitchBot.irc.data.enums import BotEvent
+from AthenaTwitchLib.irc.logic import CommandLogic, CommandData
+from AthenaTwitchLib.irc.message_context import MessageCommandContext
+from AthenaTwitchLib.irc.data.enums import BotEvent
 
 # Local Imports
 from neptune_twitchbot.data.git import GIT_TEXT
@@ -45,3 +45,9 @@ class NeptuneCommands(CommandLogic):
     @CommandLogic.command_broadcaster(CommandData(["exit"]))
     async def cmd_exit(self, context:MessageCommandContext):
         context.bot_event_future.set_result(BotEvent.EXIT)
+
+    @CommandLogic.command_moderator(CommandData(["so"]))
+    async def cmd_restart(self, context:MessageCommandContext):
+        await context.write(
+            "I should only reply to Andreas"
+        )

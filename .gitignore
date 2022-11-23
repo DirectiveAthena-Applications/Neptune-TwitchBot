@@ -1,5 +1,7 @@
 .idea/
 secrets/
+data/logger.sqlite
+data/logic.sqlite
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
