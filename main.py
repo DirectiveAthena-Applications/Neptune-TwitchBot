@@ -7,14 +7,13 @@ import os
 import asyncio
 import sys
 import tracemalloc
-import pathlib
 
 # Athena Packages
-from AthenaLib.parsers.dot_env import DotEnv as AthenaDotEnv
+from AthenaLib.parsers.dot_env import AthenaDotEnv
 
 from AthenaTwitchLib.irc.irc_connection import IrcConnection
 from AthenaTwitchLib.irc.bot import Bot
-from AthenaTwitchLib.logger import IrcLogger, TwitchLoggerType
+from AthenaTwitchLib.logger import IrcLogger,ApiLogger
 from AthenaTwitchLib.irc.logic.commands_sqlite import CommandLogicSqlite
 
 # Local Imports
@@ -25,6 +24,7 @@ from neptune_twitchbot.objects.neptune_tasks import NeptuneTasks
 # - Code -
 # ----------------------------------------------------------------------------------------------------------------------
 async def main():
+    # Because of Asyncio errors
     tracemalloc.start()
 
     # Load up secrets to environment
@@ -33,41 +33,35 @@ async def main():
     # Define the logger as soon as possible,
     #   As it is called by a lot of different systems
     #   Will create tables if need be
-    IrcLogger.set_logger(
-        logger_type=TwitchLoggerType.IRC,
-        logger=IrcLogger(
-            path=pathlib.Path("data/logger.sqlite"),
-            enabled=True
-        )
-    )
-    await IrcLogger.get_logger(TwitchLoggerType.IRC).create_tables()
+    with IrcLogger, ApiLogger:
 
-    # Run constructor,
-    #   Which starts the connections
-    #   create the task in a loop that runs forever
-    await IrcConnection(
+        # Run constructor,
+        #   Which starts the connections
+        #   create the task in a loop that runs forever
+        await IrcConnection(
 
-        # Assemble the bare BOT
-        bot_obj=Bot(
-            name=os.getenv("TWITCH_BOT_NAME"),
-            oath_token=os.getenv("TWITCH_BOT_OATH"),
-            join_channel=["directiveathena"],
-            capability_tags=True,
-            capability_commands=True,
-            capability_membership=True,
-            # command_logic=NeptuneCommands(),
-            command_logic=CommandLogicSqlite(db_path="data/logic.sqlite"),
-            task_logic=NeptuneTasks()
+            # Assemble the bare BOT
+            bot_obj=Bot(
+                name=os.getenv("TWITCH_BOT_NAME"),
+                oath_token=os.getenv("TWITCH_BOT_OATH"),
+                join_channel=["directiveathena"],
+                capability_tags=True,
+                capability_commands=True,
+                capability_membership=True,
+                # command_logic=NeptuneCommands(),
+                command_logic=CommandLogicSqlite(path="data/logic.sqlite"),
+                # task_logic=NeptuneTasks()
+            ),
 
-        ),
+            # Define restart attempts
+            #   -1 is infinite restarts
+            restart_attempts=-1
 
-        # Define restart attempts
-        #   -1 is infinite restarts
-        restart_attempts=-1
-    ).construct()
+        ).construct()
 
 if __name__ == '__main__':
     try:
         asyncio.run(main())
     except RuntimeError as e:
-        sys.exit(e)
+        raise
+        # sys.exit(e)
