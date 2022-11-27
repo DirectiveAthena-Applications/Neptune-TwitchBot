@@ -1,5 +1,6 @@
 #PyCharm
 .idea/
+.run/
 
 # Data that shouldn't be recorded to the git repo
 secrets/
