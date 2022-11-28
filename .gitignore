@@ -3,7 +3,7 @@
 .run/
 
 # Data that shouldn't be recorded to the git repo
-secrets/
+.secrets/
 data/logger.sqlite
 data/logic.sqlite
 

@@ -16,6 +16,10 @@ from AthenaTwitchLib.irc.bot import Bot
 from AthenaTwitchLib.logger import IrcLogger,ApiLogger
 from AthenaTwitchLib.irc.logic.commands_sqlite import CommandLogicSqlite
 
+from AthenaTwitchLib.api.api_connection import ApiConnection
+from AthenaTwitchLib.api.data.urls import TwitchApiUrl
+import AthenaTwitchLib.api.api_requests as ApiRequests
+
 # Local Imports
 from neptune_twitchbot.objects.neptune_commands import NeptuneCommands
 from neptune_twitchbot.objects.neptune_tasks import NeptuneTasks
@@ -28,12 +32,18 @@ async def main():
     tracemalloc.start()
 
     # Load up secrets to environment
-    AthenaDotEnv(filepath="secrets/secrets.env", auto_run=True)
+    AthenaDotEnv(filepath=".secrets/secrets.env", auto_run=True)
 
     # Define the logger as soon as possible,
     #   As it is called by a lot of different systems
     #   Will create tables if need be
     with IrcLogger, ApiLogger:
+
+        api_connection:ApiConnection = ApiConnection(
+            username=os.getenv("TWITCH_BROADCASTER_NAME"),
+            oath_token=os.getenv("TWITCH_BROADCASTER_OATH"),
+            client_id=os.getenv("TWITCH_BROADCASTER_CLIENT_ID")
+        )
 
         # Run constructor,
         #   Which starts the connections
@@ -48,8 +58,8 @@ async def main():
                 capability_tags=True,
                 capability_commands=True,
                 capability_membership=True,
-                # command_logic=NeptuneCommands(),
-                command_logic=CommandLogicSqlite(path="data/logic.sqlite"),
+                # command_logic=NeptuneCommands(api_connection=api_connection),
+                command_logic=CommandLogicSqlite(path="data/logic.sqlite", api_connection=api_connection),
                 # task_logic=NeptuneTasks()
             ),
 
