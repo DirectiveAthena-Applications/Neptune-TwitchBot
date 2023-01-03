@@ -32,10 +32,7 @@ class NeptuneCommands(CommandLogic):
     @CommandLogic.command(CommandData(["git", "github"]))
     async def cmd_git(self, context:MessageCommandContext):
         await context.reply(
-            GIT_TEXT.get(
-                context.args[0] if context.args else "",
-                GIT_TEXT[""]
-            )
+            GIT_TEXT.GET(context.args[0] if context.args else "", GIT_TEXT[""])
         )
 
     @CommandLogic.command_moderator(CommandData(["restart"]))

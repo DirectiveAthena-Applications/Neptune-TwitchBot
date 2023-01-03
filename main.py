@@ -18,7 +18,7 @@ from AthenaTwitchLib.irc.logic.commands_sqlite import CommandLogicSqlite
 
 from AthenaTwitchLib.api.api_connection import ApiConnection
 from AthenaTwitchLib.api.data.urls import TwitchApiUrl
-import AthenaTwitchLib.api.api_requests as ApiRequests
+from AthenaTwitchLib.api.requests import ApiRequests
 
 # Local Imports
 from neptune_twitchbot.objects.neptune_commands import NeptuneCommands
@@ -40,9 +40,7 @@ async def main():
     with IrcLogger, ApiLogger:
 
         api_connection:ApiConnection = ApiConnection(
-            username=os.getenv("TWITCH_BROADCASTER_NAME"),
-            oath_token=os.getenv("TWITCH_BROADCASTER_OATH"),
-            client_id=os.getenv("TWITCH_BROADCASTER_CLIENT_ID")
+            oath_token=os.getenv("TWITCH_BROADCASTER_OATH")
         )
 
         # Run constructor,
